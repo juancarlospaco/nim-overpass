@@ -2,7 +2,7 @@
 
 - OpenStreetMap Overpass API Lib, Async & Sync, with & without SSL, command line App (50Kb).
 
-![OpenStreetMap](osm.jpg)
+![OpenStreetMap](https://raw.githubusercontent.com/juancarlospaco/nim-overpass/master/osm.jpg)
 
 
 # Install
