@@ -33,3 +33,19 @@
 - How to Edit the OpenStreetMap using this lib ?.
 
 You can not, Overpass is a read-only OpenStreetMap API, but optimized for read speed.
+
+- This works without SSL ?.
+
+Yes.
+
+- This works with SSL ?.
+
+Yes.
+
+- This works with Asynchronous code ?.
+
+Yes.
+
+- This works with Synchronous code ?.
+
+Yes.
