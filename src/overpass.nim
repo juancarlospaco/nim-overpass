@@ -22,9 +22,7 @@
 ## - ``query`` is an overpass query, ``string`` type, required.
 ## - ``api_url`` is an overpass HTTP API URL, ``string`` type, optional.
 
-import
-  asyncdispatch, json, httpclient, strformat, strutils, times, xmldomparser,
-  xmldom, terminal, random, os
+import asyncdispatch, json, httpclient, strformat, strutils, times, xmldomparser, xmldom, terminal, random, os
 
 when defined(ssl):  # Works with SSL.
   const
