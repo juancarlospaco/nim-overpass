@@ -1,3 +1,27 @@
+## Nim-Overpass
+## ============
+##
+## OpenStreetMap Overpass API Lib, Async & Sync, with & without SSL, command line App.
+##
+## Install
+## -------
+##
+## ``nimble install overpass``
+##
+## Use
+## ---
+##
+## ``./overpass "node(1422314245);out;"``
+##
+## API
+## ---
+##
+## ``get*(this: OSM | AsyncOSM, query: string, api_url = api_main0)``
+##
+## - ``this`` is ``OSM(timeout=int8)`` for Synchronous code or ``AsyncOSM(timeout=int8)`` for Asynchronous code.
+## - ``query`` is an overpass query, ``string`` type, required.
+## - ``api_url`` is an overpass HTTP API URL, ``string`` type, optional.
+
 import
   asyncdispatch, json, httpclient, strformat, strutils, times, xmldomparser,
   xmldom, terminal, random, os
@@ -45,11 +69,9 @@ when is_main_module:
     let
       openstreetmap_client = OSM(timeout: 5)
       async_openstreetmap_client = AsyncOSM(timeout: 5)
-
     # Sync client.
     echo openstreetmap_client.get(query="node(1422314245);out;")
     echo openstreetmap_client.get(query="[out:json];node(507464799);out;")
-
     # Async client.
     proc test {.async.} = echo await async_openstreetmap_client.get(query="node(1422314245);out;")
     waitFor test()
