@@ -1,6 +1,6 @@
 # nim-overpass
 
-- OpenStreetMap Overpass API Lib, Async & Sync, with & without SSL, command line App (50Kb).
+- [OpenStreetMap](https://openstreetmap.org) [Overpass](https://overpass-turbo.eu) API Lib, [Async & Sync](https://github.com/juancarlospaco/nim-overpass/blob/master/src/overpass.nim#L74), with & without SSL, [command line App (50Kb)](https://github.com/juancarlospaco/nim-overpass/releases).
 
 ![OpenStreetMap](https://raw.githubusercontent.com/juancarlospaco/nim-overpass/master/osm.jpg)
 
