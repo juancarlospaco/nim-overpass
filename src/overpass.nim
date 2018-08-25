@@ -46,14 +46,14 @@ else:  # Works without SSL.
 type
   OverpassBase*[HttpType] = object
     timeout*: int8
-  OSM* = OverpassBase[HttpClient]            ##  Sync OpenStreetMap OverPass Client.
-  AsyncOSM* = OverpassBase[AsyncHttpClient]  ## Async OpenStreetMap OverPass Client.
+  Overpass* = OverpassBase[HttpClient]            ##  Sync OpenStreetMap OverPass Client.
+  AsyncOverpass* = OverpassBase[AsyncHttpClient]  ## Async OpenStreetMap OverPass Client.
 
-proc get*(this: OSM | AsyncOSM, query: string, api_url = api_main0): Future[string] {.multisync.} =
+proc get*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0): Future[string] {.multisync.} =
   ## Take an OverPass query and return an XML or JSON result, Asynchronously or Synchronously.
   let
     response =
-      when this is AsyncOSM: await newAsyncHttpClient().get(api_url & "?data=" & query.strip) # Async.
+      when this is AsyncOverpass: await newAsyncHttpClient().get(api_url & "?data=" & query.strip) # Async.
       else: newHttpClient(timeout=this.timeout * 1000).get(api_url & "?data=" & query.strip)  # Sync.
   result = await response.body
 
@@ -62,11 +62,11 @@ when is_main_module:
     randomize()
     setBackgroundColor(bgBlack)
     setForegroundColor([fgRed, fgGreen, fgYellow, fgBlue, fgMagenta, fgCyan, fgWhite].rand)
-    echo OSM(timeout: 99).get(query=paramStr(1))
+    echo Overpass(timeout: 99).get(query=paramStr(1))
   else:  # When not release, its an example of how to make queries to OpenStreetMap.
     let
-      openstreetmap_client = OSM(timeout: 5)
-      async_openstreetmap_client = AsyncOSM(timeout: 5)
+      openstreetmap_client = Overpass(timeout: 5)
+      async_openstreetmap_client = AsyncOverpass(timeout: 5)
     # Sync client.
     echo openstreetmap_client.get(query="node(1422314245);out;")
     echo openstreetmap_client.get(query="[out:json];node(507464799);out;")

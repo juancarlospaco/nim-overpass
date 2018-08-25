@@ -1,8 +1,10 @@
 # nim-overpass
 
-- [OpenStreetMap](https://openstreetmap.org) [Overpass](https://overpass-turbo.eu) API Lib, [Async & Sync](https://github.com/juancarlospaco/nim-overpass/blob/master/src/overpass.nim#L74), with & without SSL, [command line App (50Kb)](https://github.com/juancarlospaco/nim-overpass/releases).
+- [OpenStreetMap](https://openstreetmap.org) [Overpass](https://overpass-turbo.eu) API Lib,
+[Async & Sync](https://github.com/juancarlospaco/nim-overpass/blob/master/src/overpass.nim#L74),
+with & without SSL, [command line App (50Kb)](https://github.com/juancarlospaco/nim-overpass/releases).
 
-![OpenStreetMap](https://raw.githubusercontent.com/juancarlospaco/nim-overpass/master/osm.jpg)
+![OpenStreetMap](https://raw.githubusercontent.com/juancarlospaco/nim-overpass/master/osm.jpg "OpenStreetMap")
 
 
 # Install
@@ -21,9 +23,9 @@
 
 # API
 
-`get*(this: OSM | AsyncOSM, query: string, api_url = api_main0)`
+`get*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0)`
 
-- `this` is `OSM(timeout=int8)` for Synchronous code or `AsyncOSM(timeout=int8)` for Asynchronous code.
+- `this` is `Overpass(timeout=int8)` for Synchronous code or `AsyncOverpass(timeout=int8)` for Asynchronous code.
 - `query` is an overpass query, `string` type, required.
 - `api_url` is an overpass HTTP API URL, `string` type, optional.
 
@@ -49,6 +51,14 @@ Yes.
 - This works with Synchronous code ?.
 
 Yes.
+
+- This requires API Key or Login ?.
+
+No.
+
+- This requires Credit Card or Payments ?.
+
+No.
 
 - How do I build the Query string ?.
 
