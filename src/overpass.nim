@@ -16,9 +16,9 @@
 ## API
 ## ---
 ##
-## ``get*(this: OSM | AsyncOSM, query: string, api_url = api_main0)``
+## ``get*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0)``
 ##
-## - ``this`` is ``OSM(timeout=int8)`` for Synchronous code or ``AsyncOSM(timeout=int8)`` for Asynchronous code.
+## - ``this`` is ``Overpass(timeout=int8)`` for Synchronous code or ``AsyncOverpass(timeout=int8)`` for Asynchronous code.
 ## - ``query`` is an overpass query, ``string`` type, required.
 ## - ``api_url`` is an overpass HTTP API URL, ``string`` type, optional.
 
