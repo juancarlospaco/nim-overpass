@@ -23,11 +23,16 @@ with & without SSL, [command line App (50Kb)](https://github.com/juancarlospaco/
 
 # API
 
-`get*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0)`
+`search*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0)`
 
 - `this` is `Overpass(timeout=int8)` for Synchronous code or `AsyncOverpass(timeout=int8)` for Asynchronous code.
 - `query` is an overpass query, `string` type, required.
 - `api_url` is an overpass HTTP API URL, `string` type, optional.
+
+- The `timeout` argument is on Seconds.
+- OpenStreetMap API limits the length of all key and value strings to a maximum of 255 characters.
+- For Proxy support define a `Overpass.proxy` or `AsyncOverpass.proxy` of `Proxy` type.
+- No OS-specific code, so it should work on Linux, Windows and Mac. Not JS.
 
 
 # FAQ
