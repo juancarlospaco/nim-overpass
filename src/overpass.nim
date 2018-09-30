@@ -22,7 +22,7 @@
 ## - ``query`` is an overpass query, ``string`` type, required.
 ## - ``api_url`` is an overpass HTTP API URL, ``string`` type, optional.
 
-import asyncdispatch, httpclient, strformat, strutils, xmldomparser, xmldom, terminal, random, os, httpcore
+import asyncdispatch, httpclient, strformat, strutils, xmldomparser, xmldom, terminal, random, httpcore, os
 
 when defined(ssl):  # Works with SSL.
   const
@@ -60,19 +60,26 @@ proc search*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0)
         newHttpClient(timeout=this.timeout * 1000, proxy = when declared(this.proxy): this.proxy else: nil ).get(api_url & "?data=" & query.strip)  # Sync.
   result = await response.body
 
+
 when is_main_module:
-  when defined(release):  # When release, its a command line app to make queries to OpenStreetMap.
+  when defined(release) and not defined(js):  # When release, its a command line app to make queries to OpenStreetMap.
     randomize()
     setBackgroundColor(bgBlack)
     setForegroundColor([fgRed, fgGreen, fgYellow, fgBlue, fgMagenta, fgCyan, fgWhite].rand)
     echo Overpass(timeout: 99, proxy: nil).search(query=paramStr(1))
-  else:  # When not release, its an example of how to make queries to OpenStreetMap.
-    let
-      overpass_client = Overpass(timeout: 5, proxy: nil)
-      async_overpass_client = AsyncOverpass(timeout: 5, proxy: nil)
-    # Sync client.
-    echo overpass_client.search(query="node(1422314245);out;")
-    echo overpass_client.search(query="[out:json];node(507464799);out;")
-    # Async client.
-    proc test {.async.} = echo await async_overpass_client.search(query="node(1422314245);out;")
-    waitFor test()
+
+
+runnableExamples:  # When not release, its an example of how to make queries to OpenStreetMap.
+  import asyncdispatch, httpclient, strformat, strutils, xmldomparser, xmldom, terminal, random, httpcore, os
+
+  let
+    overpass_client = Overpass(timeout: 5, proxy: nil)
+    async_overpass_client = AsyncOverpass(timeout: 5, proxy: nil)
+
+  # Sync client.
+  echo overpass_client.search(query="node(1422314245);out;")
+  echo overpass_client.search(query="[out:json];node(507464799);out;")
+
+  # Async client.
+  proc test {.async.} = echo await async_overpass_client.search(query="node(1422314245);out;")
+  waitFor test()
