@@ -14,7 +14,11 @@ with & without SSL, [command line App (50Kb)](https://github.com/juancarlospaco/
 
 # Use
 
-- `./overpass "node(1422314245);out;"`
+- `./overpass --color --lower --timeout=9 "node(1422314245)"`
+
+- The output format is automatically set to JSON, `JsonNode` type.
+- You must omit the `[out:json];` and `;out;` on the Query.
+
 
 # Requisites
 
