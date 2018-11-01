@@ -1,28 +1,27 @@
 ## Nim-Overpass
 ## ============
 ##
-## OpenStreetMap Overpass API Lib, Async & Sync, with & without SSL, command line App.
+## - OpenStreetMap Overpass API Lib, Async & Sync, with & without SSL, command line App.
 ##
 ## Install
 ## -------
 ##
-## ``nimble install overpass``
+## - ``nimble install overpass``
 ##
 ## Use
 ## ---
 ##
-## ``./overpass "node(1422314245);out;"``
+## - ``./overpass --color --lower --timeout=9 "node(1422314245)"``
 ##
 ## API
 ## ---
 ##
-## ``search*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0)``
+## - ``search*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0)``
 ##
-## - ``this`` is ``Overpass(timeout=int8)`` for Synchronous code or ``AsyncOverpass(timeout=int8)`` for Asynchronous code.
+## - ``this`` is ``Overpass(timeout=byte)`` for Synchronous code or ``AsyncOverpass(timeout=byte)`` for Asynchronous code.
 ## - ``query`` is an overpass query, ``string`` type, required.
 ## - ``api_url`` is an overpass HTTP API URL, ``string`` type, optional.
-
-import asyncdispatch, httpclient, strformat, strutils, xmldomparser, xmldom, terminal, random, httpcore, os
+import asyncdispatch, httpclient, strformat, strutils, httpcore, os, json
 
 when defined(ssl):  # Works with SSL.
   const
@@ -45,41 +44,62 @@ else:  # Works without SSL.
 
 type
   OverpassBase*[HttpType] = object
-    timeout*: int8
-    proxy*: Proxy
+    timeout*: byte ## Timeout Seconds for API Calls, byte type, 0~255.
+    proxy*: Proxy ## Network IPv4 / IPv6 Proxy support, Proxy type.
   Overpass* = OverpassBase[HttpClient]            ##  Sync OpenStreetMap OverPass Client.
   AsyncOverpass* = OverpassBase[AsyncHttpClient]  ## Async OpenStreetMap OverPass Client.
 
-proc search*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0): Future[string] {.multisync.} =
-  ## Take an OverPass query and return an XML or JSON result, Asynchronously or Synchronously.
+proc search*(this: Overpass | AsyncOverpass, query: string, api_url = api_main0): Future[JsonNode] {.multisync.} =
+  ## Take an OverPass query and return JSON, Asynchronously or Synchronously.
   let
+    cueri = "?data=[out:json];" & query.strip & ";out;"
     response =
       when this is AsyncOverpass:
-        await newAsyncHttpClient(proxy = when declared(this.proxy): this.proxy else: nil).get(api_url & "?data=" & query.strip) # Async.
+        await newAsyncHttpClient(proxy = when declared(this.proxy): this.proxy else: nil).get(api_url & cueri) # Async.
       else:
-        newHttpClient(timeout=this.timeout * 1000, proxy = when declared(this.proxy): this.proxy else: nil ).get(api_url & "?data=" & query.strip)  # Sync.
-  result = await response.body
+        newHttpClient(timeout=this.timeout.int * 1000, proxy = when declared(this.proxy): this.proxy else: nil ).get(api_url & cueri)  # Sync.
+  result = parseJson(await response.body)
 
 
-when is_main_module:
-  when defined(release) and not defined(js):  # When release, its a command line app to make queries to OpenStreetMap.
-    randomize()
-    setBackgroundColor(bgBlack)
-    setForegroundColor([fgRed, fgGreen, fgYellow, fgBlue, fgMagenta, fgCyan, fgWhite].rand)
-    echo Overpass(timeout: 99, proxy: nil).search(query=paramStr(1))
+when is_main_module and defined(release) and not defined(js):  # When release, its a command line app to make queries to OpenStreetMap.
+  import parseopt, terminal, random
+  var
+    taimaout = 99.byte
+    minusculas: bool
+  for tipoDeClave, clave, valor in getopt():
+    case tipoDeClave
+    of cmdShortOption, cmdLongOption:
+      case clave
+      of "version":             quit("0.2.5", 0)
+      of "license", "licencia": quit("MIT", 0)
+      of "help", "ayuda":       quit("""./overpass --color --lower --timeout=9 "node(1422314245)" """, 0)
+      of "minusculas", "lower": minusculas = true
+      of "timeout":             taimaout = taimaout.byte # HTTTP Timeout.
+      of "color":
+        randomize()
+        setBackgroundColor(bgBlack)
+        setForegroundColor([fgRed, fgGreen, fgYellow, fgBlue, fgMagenta, fgCyan, fgWhite].rand)
+    of cmdArgument:
+      let
+        clientito = Overpass(timeout: taimaout)
+        resultadito = clientito.search(query=clave.strip.toLowerAscii).pretty
+      if minusculas: echo resultadito.toLowerAscii else: echo resultadito
+    of cmdEnd: quit("Wrong Parameters, see Help with --help", 1)
 
 
-runnableExamples:  # When not release, its an example of how to make queries to OpenStreetMap.
-  import asyncdispatch, httpclient, strformat, strutils, xmldomparser, xmldom, terminal, random, httpcore, os
-
-  let
-    overpass_client = Overpass(timeout: 5, proxy: nil)
-    async_overpass_client = AsyncOverpass(timeout: 5, proxy: nil)
+runnableExamples:  # This is an example of how to make queries to OpenStreetMap.
+  import asyncdispatch, json
 
   # Sync client.
-  echo overpass_client.search(query="node(1422314245);out;")
-  echo overpass_client.search(query="[out:json];node(507464799);out;")
+  let overpass_client = Overpass(timeout: 5, proxy: nil)
+  echo overpass_client.search(query="node(1422314245)").pretty
+  echo overpass_client.search(query="node(507464799)").pretty
 
   # Async client.
-  proc test {.async.} = echo await async_overpass_client.search(query="node(1422314245);out;")
-  waitFor test()
+  proc test {.async.} =
+    let
+      async_overpass_client = AsyncOverpass(timeout: 5, proxy: nil)
+      results = await async_overpass_client.search(query="node(1422314245)")
+    echo results.pretty
+
+  wait_for test()
