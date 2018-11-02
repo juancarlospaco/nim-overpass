@@ -74,7 +74,7 @@ when is_main_module and defined(release) and not defined(js):  # When release, i
       of "license", "licencia": quit("MIT", 0)
       of "help", "ayuda":       quit("""./overpass --color --lower --timeout=9 "node(1422314245)" """, 0)
       of "minusculas", "lower": minusculas = true
-      of "timeout":             taimaout = taimaout.byte # HTTTP Timeout.
+      of "timeout":             taimaout = valor.parseInt.byte # HTTTP Timeout.
       of "color":
         randomize()
         setBackgroundColor(bgBlack)
@@ -91,14 +91,14 @@ runnableExamples:  # This is an example of how to make queries to OpenStreetMap.
   import asyncdispatch, json
 
   # Sync client.
-  let overpass_client = Overpass(timeout: 5, proxy: nil)
+  let overpass_client = Overpass(timeout: 9.byte, proxy: nil)
   echo overpass_client.search(query="node(1422314245)").pretty
   echo overpass_client.search(query="node(507464799)").pretty
 
   # Async client.
   proc test {.async.} =
     let
-      async_overpass_client = AsyncOverpass(timeout: 5, proxy: nil)
+      async_overpass_client = AsyncOverpass(timeout: 9.byte, proxy: nil)
       results = await async_overpass_client.search(query="node(1422314245)")
     echo results.pretty
 

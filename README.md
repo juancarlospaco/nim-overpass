@@ -71,4 +71,4 @@ No.
 
 - How do I build the Query string ?.
 
-Use Nims [builtin XML module](https://nim-lang.org/docs/xmldom.html) or [FMT strings module](https://nim-lang.org/docs/strformat.html).
+Use Nims [FMT strings module](https://nim-lang.org/docs/strformat.html).
