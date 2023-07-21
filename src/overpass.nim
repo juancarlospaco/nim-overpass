@@ -78,7 +78,7 @@ when is_main_module and defined(release) and not defined(js):  # When release, i
       of "color":
         randomize()
         setBackgroundColor(bgBlack)
-        setForegroundColor([fgRed, fgGreen, fgYellow, fgBlue, fgMagenta, fgCyan, fgWhite].rand)
+        setForegroundColor([fgRed, fgGreen, fgYellow, fgBlue, fgMagenta, fgCyan, fgWhite].sample)
     of cmdArgument:
       let
         clientito = Overpass(timeout: taimaout)
